@@ -13,7 +13,7 @@ services:
     user: root
 
     # choose container name
-    container_name: jenkins-support
+    container_name: jenkins
 
     # Listen on the desired ports
     # - Port 8080   exposes the web interface
