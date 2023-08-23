@@ -34,10 +34,10 @@ jenkins:
             startupScript: "" # tried not setting, added when 'saved' in UI
             networkConfiguration:
               sharedVpc:
-                projectId: tdnest-network-nonprod
+                projectId: my-gcp-network
                 region: asia-southeast1
-                subnetworkShortName: subnet-share-vm-sg-01
-            networkTags: "jenkin-agent egress-internet jenkin"
+                subnetworkShortName: my-subnet
+            networkTags: "my-network-tags"
             externalAddress: false
             useInternalAddress: false
             bootDiskSourceImageProject: my-gcp
@@ -72,7 +72,7 @@ security:
           strategy: triggeringUsersAuthorizationStrategy
 unclassified:
   location:
-    url: https://jenkins-support.tdnest.io/
+    url: https://mydomain.io
   scmGit:
     globalConfigName: jenkins
     globalConfigEmail: jenkins@domain.local
