@@ -1,0 +1,96 @@
+jenkins:
+  numExecutors: 5
+  scmCheckoutRetryCount: 2
+  systemMessage: |
+    Welcome to Jenkins Server.
+    This Jenkins is 100% configured and managed 'as code'.
+
+  clouds:
+    - computeEngine:
+        cloudName: my-gcp-gce
+        projectId: my-gcp
+        instanceCapStr: 10
+        credentialsId: my-gcp
+        noDelayProvisioning: false
+        configurations:
+          - namePrefix: jenkins-slave
+            description: jenkins-slave
+            launchTimeoutSecondsStr: 300
+            retentionTimeMinutesStr: 5
+            mode: EXCLUSIVE
+            labelString: jenkins-slave
+            numExecutorsStr: 3
+            runAsUser: jenkins
+            remoteFs: ""
+            javaExecPath: "java"
+            oneShot: false
+            createSnapshot: false
+            region: "https://www.googleapis.com/compute/v1/projects/my-gcp/regions/asia-southeast1"
+            zone: "https://www.googleapis.com/compute/v1/projects/my-gcp/zones/asia-southeast1-a"
+            template: "" # tried not setting, added when 'saved' in UI
+            machineType: "https://www.googleapis.com/compute/v1/projects/my-gcp/zones/asia-southeast1-a/machineTypes/n1-standard-4"
+            preemptible: false
+            minCpuPlatform: "" # tried not setting, added when 'saved' in UI
+            startupScript: "" # tried not setting, added when 'saved' in UI
+            networkConfiguration:
+              sharedVpc:
+                projectId: tdnest-network-nonprod
+                region: asia-southeast1
+                subnetworkShortName: subnet-share-vm-sg-01
+            networkTags: "jenkin-agent egress-internet jenkin"
+            externalAddress: false
+            useInternalAddress: false
+            bootDiskSourceImageProject: my-gcp
+            bootDiskSourceImageName: "https://www.googleapis.com/compute/v1/projects/my-gcp/global/images/jenkins-slave"
+            bootDiskType: "https://www.googleapis.com/compute/v1/projects/my-gcp/zones/asia-southeast1-a/diskTypes/pd-standard"
+            bootDiskSizeGbStr: 20
+            bootDiskAutoDelete: true
+            serviceAccountEmail: "jenkin-gce@my-gcp.iam.gserviceaccount.com"
+
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+          - name: "admin"
+            description: "Jenkins Admin"
+            permissions:
+              - "Overall/Administer"
+            assignments:
+              - "admin"
+
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "ToChange"
+
+security:
+  queueItemAuthenticator:
+    authenticators:
+      - global:
+          strategy: triggeringUsersAuthorizationStrategy
+unclassified:
+  location:
+    url: https://jenkins-support.tdnest.io/
+  scmGit:
+    globalConfigName: jenkins
+    globalConfigEmail: jenkins@domain.local
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - googleRobotPrivateKey:
+              projectId: "my-gcp"
+              serviceAccountConfig:
+                json:
+                  # The contents of test-key.json in base 64.
+                  secretJsonKey: "{BASE64ENCODING}"
+
+          - usernamePassword:
+              scope: GLOBAL
+              id: "any-user-pass"
+              description: "my user"
+              username: "myuser"
+              password: "{BASE64ENCODING}"

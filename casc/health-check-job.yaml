@@ -1,0 +1,33 @@
+jobs:
+  - script: >
+      freeStyleJob('Healthcheck CLI') {
+        description('Healthcheck Jenkins pipeline and 3rd party CLI.')
+        concurrentBuild(false)
+        displayName('Healthcheck CLI')
+        label('nonprod-jenkins-monstache')
+        properties {}
+        triggers {
+          cron("H H * * *")
+        }
+        wrappers {
+          preBuildCleanup()
+        }
+        scm {
+          git {
+            remote {
+              name('Jenkins jobs')
+              url('https://github.com/vibakar/jenkins-pipelines.git')
+            }
+            branch('master')
+          }
+        }
+        steps {
+          shell("""
+            echo "Hello Jenkin"
+            echo "gcloud"
+            gcloud --version
+            echo "docker"
+            docker --version
+          """)
+        }
+      }

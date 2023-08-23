@@ -1,0 +1,7 @@
+jenkins_home
+**/workspace@script
+**/workspace
+**/builds
+**/nextBuildNumber
+**/*.zip
+**/htmlreports
