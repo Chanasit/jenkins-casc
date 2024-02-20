@@ -1,5 +1,14 @@
 # Jenkin CASC and GCE slave
 
+## Architecture
+
+<img src="./jenkins-ce-architecture.svg" alt="drawing" width="800"/>
+
+## Objectives
+- Create a base image with Packer for running your Jenkins builds.
+- Provision Jenkins using Cloud Marketplace.
+- Configure Jenkins to deploy ephemeral build agents.
+
 ## Startup script
 
 ```
