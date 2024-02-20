@@ -1,0 +1,58 @@
+{
+  "builders": [
+    {
+      "type": "googlecompute",
+      "project_id": "tdshop-shared-vpc",
+      "source_image_family": "ubuntu-1804-lts",
+      "source_image_project_id": "ubuntu-os-cloud",
+      "zone": "asia-southeast1-a",
+      "disk_size": "10",
+      "image_name": "jenkins-monstache-agent-{{timestamp}}",
+      "image_family": "jenkins-agent",
+      "ssh_username": "ubuntu",
+      "tags": ["packer"]
+    }
+  ],
+  "provisioners": [
+    {
+       "type": "shell",
+       "inline": ["/usr/bin/cloud-init status --wait"]
+    },
+    {
+      "type": "shell",
+      "inline": ["wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -"]
+    },
+    {
+      "type": "shell",
+      "inline": ["echo \"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list"]
+    },
+    {
+      "type": "shell",
+      "inline": ["curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -"]
+    },
+    {
+      "type": "shell",
+      "inline": ["echo \"deb https://apt.kubernetes.io/ kubernetes-xenial main\" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list"]
+    },
+    {
+      "type": "shell",
+      "inline": ["sudo apt-get update", "sudo apt-get install -y unzip default-jdk apt-transport-https gnupg2 mongodb-org-shell kubectl jq curl"]
+    },
+    {
+      "type": "shell",
+      "inline": ["wget https://github.com/rwynn/monstache/releases/download/v5.6.0/monstache-a954281.zip -O monstache.zip", "unzip monstache.zip -d /tmp/monstache"]
+    },
+    {
+      "type": "shell",
+      "inline": ["sudo mkdir -p /etc/monstache", "sudo mv /tmp/monstache/build/linux-amd64/monstache /etc/monstache/monstache"]
+    },
+    {
+      "type": "shell",
+      "inline": ["wget https://github.com/fluxcd/flux/releases/download/1.20.0/fluxctl_linux_amd64 -O fluxctl", "chmod a+x fluxctl", "sudo mv fluxctl /usr/local/bin"]
+    },
+    {
+      "type": "shell",
+      "inline": ["sudo mkdir -p /var/log/monstache", "sudo chown jenkins /var/log/monstache"]
+    }
+  ]
+}
